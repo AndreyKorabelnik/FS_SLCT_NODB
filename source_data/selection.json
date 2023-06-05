@@ -1,0 +1,47 @@
+{
+  "results": [
+    {
+      "columns": [
+        {
+          "name": "SELECTION_ID",
+          "type": "NUMBER"
+        },
+        {
+          "name": "FILTER_ID",
+          "type": "NUMBER"
+        },
+        {
+          "name": "FILTER_EXPRESSION",
+          "type": "VARCHAR2"
+        }
+      ],
+      "items": [
+        {
+          "selection_id": 25916,
+          "filter_id": 1,
+          "filter_expression": "country_code IN ('US') and size_group IN ('L','M')"
+        },
+        {
+          "selection_id": 25916,
+          "filter_id": 2,
+          "filter_expression": "region_name like '%##DEV-EMER-MARKET##%'"
+        },
+        {
+          "selection_id": 33074,
+          "filter_id": 1,
+          "filter_expression": "size_group IN ('M','L') and icb5_supersec_code IN ('3030')"
+        },
+        {
+          "selection_id": 33074,
+          "filter_id": 2,
+          "filter_expression": "region_name like '%##EUROPE-OLD##%'"
+        },
+        {
+          "selection_id": 33074,
+          "filter_id": 3,
+          "filter_expression": "LISTING_RANK<100"
+        }
+      ]
+    }
+  ]
+}

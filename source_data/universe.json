@@ -1,0 +1,143 @@
+{
+  "results": [
+    {
+      "columns": [
+        {
+          "name": "attr_code",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "attr_type",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "attr_data_type",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "PARTITION_BY_attr_code",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "RANK_SRC_attr_code",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "EXPRESSION",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "AGGREGATE_SRC_attr_code",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "AGGREGATE_FUNCTION",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "AGGREGATE_RUNNING_DIRECTION",
+          "type": "VARCHAR(255)"
+        }
+      ],
+      "items": [
+        {
+          "attr_code": "LISTING_ID",
+          "attr_type": "KEY",
+          "attr_data_type": "BIGINT"
+        },
+        {
+          "attr_code": "COMPANY_CODE",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "COUNTRY_CODE",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "ICB5_INDUSTRY_CODE",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "ICB5_SECTOR_CODE",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "ICB5_SUBSEC_CODE",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "ICB5_SUPERSEC_CODE",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "REGION_GROUP",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "REGION_NAME",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(4000)"
+        },
+        {
+          "attr_code": "RIC_EXTENSION",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "SIZE_GROUP",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "STYLE_GROUP",
+          "attr_type": "INPUT",
+          "attr_data_type": "VARCHAR(255)"
+        },
+        {
+          "attr_code": "LISTING_RANK",
+          "attr_type": "RANK",
+          "attr_data_type": "INT",
+          "rank_attrs": [
+            {
+              "attr_code": "LISTING_ID",
+              "order": 1,
+              "direction": "DESC"
+            }]
+        },
+        {
+          "attr_code": "LISTING_RANK_BY_COMPANY",
+          "attr_type": "RANK",
+          "attr_data_type": "INT",
+          "partition_by": "COMPANY_CODE",
+          "rank_attrs": [
+            {
+              "attr_code": "LISTING_ID",
+              "order": 1,
+              "direction": "DESC"
+            }]
+        },
+        {
+          "attr_code": "LISTING_EXPRESSION",
+          "attr_type": "EXPRESSION",
+          "attr_data_type": "INT",
+          "expression": "listing_id - listing_rank_by_company"
+        },
+        {
+          "attr_code": "LISTING_AGGREGATE",
+          "attr_type": "AGGREGATE",
+          "attr_data_type": "INT",
+          "aggregate": {"attr_code": "LISTING_ID",
+                        "function":  "SUM",
+                        "direction": "DESC"}
+        }
+      ]
+    }
+  ]
+}
