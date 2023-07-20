@@ -2,7 +2,7 @@
   "attributes": [
     {
       "attr_code": "LISTING_ID",
-      "attr_type": "KEY",
+      "attr_type": "INPUT",
       "attr_data_type": "BIGINT"
     },
     {
@@ -64,6 +64,7 @@
       "attr_code": "LISTING_RANK",
       "attr_type": "RANK",
       "attr_data_type": "INT",
+      "partition_by": "COMPANY_CODE",
       "rank_attrs": [
         {
           "attr_code": "LISTING_ID",
@@ -100,11 +101,10 @@
       "attr_code": "LISTING_AGGREGATE",
       "attr_type": "AGGREGATE",
       "attr_data_type": "INT",
-      "aggregate": {
-        "attr_code": "LISTING_ID",
-        "function": "SUM",
-        "direction": "DESC"
-      }
+      "aggregate_attr_code": "LISTING_ID",
+      "aggregate_function": "SUM",
+      "aggregate_direction": "DESC"
     }
-  ]
+  ],
+  "key": "LISTING_ID"
 }
