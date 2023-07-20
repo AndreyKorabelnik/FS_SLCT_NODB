@@ -46,8 +46,8 @@ def run_selections(universe_file, selection_file, input_file, output_directory, 
 
 
 if __name__ == '__main__':
-    run_selections(universe_file='source_data/universe.json',
-                   selection_file='source_data/selection_big.json',
-                   input_file='source_data/input_data.csv',
+    run_selections(universe_file='../source_data/universe.json',
+                   selection_file='../source_data/selection_big.json',
+                   input_file='../source_data/input_data.csv',
                    output_directory='output',
                    ouput_only_selected=1)

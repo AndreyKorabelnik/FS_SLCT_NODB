@@ -28,7 +28,7 @@ def send_file(filename, host, port):
 
 
 print(__name__)
-filename = 'C:\AndreyK\mydev\Future State Selection Service\FS_SLCT_NODB\source_data\input_data.csv'
+filename = '/source_data/input_data.csv'
 send_file(filename, SERVER_HOST, SERVER_PORT)
 
 # if __name__ == "__main__":

@@ -47,9 +47,7 @@ def run_selections(universe_file, selection_file, input_file, output_directory, 
         run_selection(df, selection_id, selection_filters, output_directory, ouput_only_selected)
 
 
-def run(client_id):
-    client_input_folder = general.get_client_input_folder(client_id)
-    client_output_folder = general.get_client_output_folder(client_id)
+def run(client_input_folder, client_output_folder):
     general.make_dir(client_output_folder)
     run_selections(universe_file=os.path.join(client_input_folder, 'universe.json'),
                    selection_file=os.path.join(client_input_folder, 'selection.json'),

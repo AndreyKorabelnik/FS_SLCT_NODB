@@ -5,16 +5,12 @@ input_folder = 'input'
 output_folder = 'output'
 
 
-def get_client_id():
-    return 1
+def get_session_input_folder(session_id):
+    return os.path.join(input_folder, f'session_{session_id}')
 
 
-def get_client_input_folder(client_id):
-    return os.path.join(input_folder, f'client_{client_id}')
-
-
-def get_client_output_folder(client_id):
-    return os.path.join(output_folder, f'client_{client_id}')
+def get_session_output_folder(session_id):
+    return os.path.join(output_folder, f'session_{session_id}')
 
 
 def make_dir(directory):
