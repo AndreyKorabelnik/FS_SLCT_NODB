@@ -12,6 +12,35 @@ def get_selections(selection_file):
     return selections, selections_filters
 
 
+def get_leveled_attributes(universe_data):
+    level_attrs = list()
+    level_num = -1
+    while len(universe_data['attributes']) > len(level_attrs):
+        level_num += 1
+        known_attrs = [a[0] for a in level_attrs if a[1] < level_num]
+        for attr in (attr for attr in universe_data['attributes'] if attr['attr_code'] not in known_attrs):
+            add_to_current_level = 1
+            if 'partition_by' in attr and attr['partition_by'] not in known_attrs:
+                add_to_current_level = 0
+                break
+            if attr['attr_type'] == 'INPUT':
+                pass  # inputs always go
+            elif attr['attr_type'] == 'RANK':
+                for rank_attr in attr['rank_attrs']:
+                    # if there are dependencies on new attributes don't add it to current level
+                    if rank_attr['attr_code'] not in known_attrs:
+                        add_to_current_level = 0
+                        break
+            elif attr['attr_type'] == 'AGGREGATE':
+                if attr['aggregate_attr_code'] not in known_attrs:
+                    add_to_current_level = 0
+            elif attr['attr_type'] == 'EXPRESSION':
+                pass  # todo
+            if add_to_current_level:
+                level_attrs.append((attr['attr_code'], level_num))
+    return level_attrs
+
+
 def get_selection_sql(selection_filters):
     filters_expr = '\n'.join(f",case when {sf['filter_expression']} then 1 else 0 end as filter_{sf['filter_id']}"
                              for sf in selection_filters)
