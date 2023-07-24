@@ -1,29 +1,39 @@
 {
-  "filters": [
+  "selections": [
     {
       "selection_id": 25916,
-      "filter_id": 1,
-      "filter_expression": "country_code IN ('US') and size_group IN ('L','M')"
-    },
-    {
-      "selection_id": 25916,
-      "filter_id": 2,
-      "filter_expression": "region_name like '%##DEV-EMER-MARKET##%'"
-    },
-    {
-      "selection_id": 33074,
-      "filter_id": 1,
-      "filter_expression": "size_group IN ('M','L') and icb5_supersec_code IN ('3030')"
-    },
-    {
-      "selection_id": 33074,
-      "filter_id": 2,
-      "filter_expression": "region_name like '%##EUROPE-OLD##%'"
+      "filters": [
+        {
+          "filter_id": 1,
+          "expression": "country_code IN ('US') and size_group IN ('L','M')",
+          "application_level": 1
+        },
+        {
+          "filter_id": 2,
+          "expression": "region_name like '%##DEV-EMER-MARKET##%'",
+          "application_level": 1
+        }
+      ]
     },
     {
       "selection_id": 33074,
-      "filter_id": 3,
-      "filter_expression": "LISTING_RANK<100"
+      "filters": [
+        {
+          "filter_id": 1,
+          "expression": "size_group IN ('M','L') and icb5_supersec_code IN ('3030')",
+          "application_level": 1
+        },
+        {
+          "filter_id": 2,
+          "expression": "region_name like '%##EUROPE-OLD##%'",
+          "application_level": 1
+        },
+        {
+          "filter_id": 3,
+          "expression": "LISTING_RANK<100",
+          "application_level": 2
+        }
+      ]
     }
   ]
 }

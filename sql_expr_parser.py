@@ -1,6 +1,15 @@
 # based on https://github.com/pyparsing/pyparsing/blob/master/examples/select_parser.py
 from pyparsing import *
 
+
+def replace_lpar(tokens):
+    return "["
+
+
+def replace_rpar(tokens):
+    return "["
+
+
 ParserElement.enablePackrat()
 
 LPAR, RPAR, COMMA = map(Suppress, "(),")
@@ -13,8 +22,9 @@ vars().update(keywords)
 any_keyword = MatchFirst(keywords.values())
 
 quoted_identifier = QuotedString('"', escQuote='""')
-identifier = (~any_keyword + Word(alphas, alphanums + "_")).setParseAction(pyparsing_common.downcaseTokens) | \
+identifier = (~any_keyword + Word(alphas, alphanums + "_")).setParseAction(pyparsing_common.upcaseTokens) | \
              quoted_identifier
+identifier = identifier.setResultsName("col")
 # expression
 expr = Forward().setName("expression")
 
@@ -22,13 +32,15 @@ numeric_literal = pyparsing_common.number
 string_literal = QuotedString("'", escQuote="''")
 literal_value = (numeric_literal | string_literal | NULL)
 
+in_list = LPAR.setParseAction(replace_lpar) + Group(delimitedList(expr)).setResultsName("values_list") + RPAR.setParseAction(replace_rpar)
+
 expr_term = (
-        LPAR
-        + delimitedList(expr)
-        + RPAR
+        in_list
         | literal_value
-        | Group(identifier("col"))
+        | Group(identifier)
 )
+
+
 
 NOT_NULL = Group(NOT + NULL)
 NOT_BETWEEN = Group(NOT + BETWEEN)
@@ -57,7 +69,7 @@ expr << infixNotation(
         ),
         ((BETWEEN | NOT_BETWEEN, AND), TERNARY, opAssoc.LEFT),
         (
-            (IN | NOT_IN) + LPAR + delimitedList(expr) + RPAR,
+            (IN | NOT_IN) + in_list,
             UNARY,
             opAssoc.LEFT,
         ),
@@ -67,19 +79,19 @@ expr << infixNotation(
 )
 
 
-def extract_identifiers_parsed_expr(parsed_expr):
+def extract_identifiers(parsed_expression):
     identifiers = []
-    if isinstance(parsed_expr, ParseResults):
-        for item in parsed_expr:
+    if isinstance(parsed_expression, ParseResults):
+        for item in parsed_expression:
             if isinstance(item, ParseResults) and item.col:
-                identifiers.append(item.col[0])
+                identifiers.append(item.col[0].upper())
             elif isinstance(item, ParseResults):
-                identifiers.extend(extract_identifiers_parsed_expr(item))
+                identifiers.extend(extract_identifiers(item))
     return identifiers
 
 
-def extract_identifiers(expression):
-    return list(set(extract_identifiers_parsed_expr(expr.parseString(expression)[0])))
+def parse(expression):
+    return expr.parseString(expression)[0]
 
 
 def main():
@@ -108,4 +120,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+#    main()
+    p = expr.parseString("ff NOT IN (1,2,4,5) and dd in ('a','b')")
+    print(p[0])
