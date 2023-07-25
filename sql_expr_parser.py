@@ -3,49 +3,104 @@ from pyparsing import *
 
 
 def replace_lpar(tokens):
-    return "["
+    return "(["
 
 
 def replace_rpar(tokens):
-    return "["
+    return "])"
+
+
+def transform_keyword(tokens):
+    return f' {tokens[0]} '
+
+
+def transform_and(tokens):
+    return f' & '
+
+
+def transform_or(tokens):
+    return f' | '
+
+
+def transform_identifier(tokens):
+    return f"df['{tokens[0]}']"
+
+
+def transform_like(tokens):
+    return '.str.contains'
+
+
+def transform_not_like(tokens):
+    return '.str.~contains'
+
+
+def transform_list(tokens):
+    return ','.join(f"'{l}'" if isinstance(l, str) else str(l) for l in tokens[0])
+
+
+def transform_not(tokens):
+    return '~'
+
+
+def transform_in(tokens):
+    return '.isin'
+
+
+def transform_not_in(tokens):
+    return '.~isin'
+
+
+def transform_like_string(tokens):
+    return f"('{tokens[0]}')"
+
 
 
 ParserElement.enablePackrat()
 
 LPAR, RPAR, COMMA = map(Suppress, "(),")
-DOT, STAR = map(Literal, ".*")
 
 # keywords
-keywords = {k: CaselessKeyword(k) for k in 'AND NOT OR NULL IS BETWEEN CASE WHEN THEN IN LIKE'.split()}
-vars().update(keywords)
+AND = CaselessKeyword('AND').setResultsName("keyword").setParseAction(transform_and)
+OR = CaselessKeyword('OR').setResultsName("keyword").setParseAction(transform_or)
+CASE = CaselessKeyword('CASE').setResultsName("keyword").setParseAction(transform_keyword)
+WHEN = CaselessKeyword('WHEN').setResultsName("keyword").setParseAction(transform_keyword)
+THEN= CaselessKeyword('THEN').setResultsName("keyword").setParseAction(transform_keyword)
+IS = CaselessKeyword('IS').setResultsName("keyword").setParseAction(transform_keyword)
+NULL = CaselessKeyword('NULL').setResultsName("keyword").setParseAction(transform_keyword)
+NOT = CaselessKeyword('NOT').setResultsName("keyword").setParseAction(transform_not)
+BETWEEN = CaselessKeyword('BETWEEN').setResultsName("keyword").setParseAction(transform_keyword)
+IN = CaselessKeyword('IN').setResultsName("keyword").setParseAction(transform_in)
+LIKE = CaselessKeyword('LIKE').setResultsName("keyword").setParseAction(transform_like)
+NOT_NULL = Group(NOT + NULL).setResultsName("keyword").setParseAction(transform_keyword)
+NOT_BETWEEN = Group(NOT + BETWEEN).setResultsName("keyword").setParseAction(transform_keyword)
+NOT_IN = Group(NOT + IN).setResultsName("keyword").setParseAction(transform_not_in)
+NOT_LIKE = Group(NOT + LIKE).setResultsName("keyword").setParseAction(transform_not_like)
 
-any_keyword = MatchFirst(keywords.values())
+keywords = [AND, OR, LIKE, IN] # todo add others
+any_keyword = MatchFirst(keywords)
 
 quoted_identifier = QuotedString('"', escQuote='""')
 identifier = (~any_keyword + Word(alphas, alphanums + "_")).setParseAction(pyparsing_common.upcaseTokens) | \
              quoted_identifier
-identifier = identifier.setResultsName("col")
-# expression
+identifier = identifier.setResultsName("col").setParseAction(transform_identifier)
+
+like_string = QuotedString("'%", end_quote_char="%'").setResultsName("like_string").setParseAction(transform_like_string)
+
 expr = Forward().setName("expression")
 
 numeric_literal = pyparsing_common.number
 string_literal = QuotedString("'", escQuote="''")
 literal_value = (numeric_literal | string_literal | NULL)
 
-in_list = LPAR.setParseAction(replace_lpar) + Group(delimitedList(expr)).setResultsName("values_list") + RPAR.setParseAction(replace_rpar)
+in_list = LPAR.setParseAction(replace_lpar) + \
+          Group(delimitedList(expr)).setResultsName("values_list").setParseAction(transform_list) + \
+          RPAR.setParseAction(replace_rpar)
 
 expr_term = (
         in_list
         | literal_value
         | Group(identifier)
 )
-
-
-
-NOT_NULL = Group(NOT + NULL)
-NOT_BETWEEN = Group(NOT + BETWEEN)
-NOT_IN = Group(NOT + IN)
-NOT_LIKE = Group(NOT + LIKE)
 
 UNARY, BINARY, TERNARY = 1, 2, 3
 expr << infixNotation(
@@ -61,15 +116,18 @@ expr << infixNotation(
             oneOf("= != <>")
             | IS
             | IN
-            | LIKE
-            | NOT_IN
-            | NOT_LIKE,
+            | NOT_IN,
             BINARY,
             opAssoc.LEFT,
         ),
         ((BETWEEN | NOT_BETWEEN, AND), TERNARY, opAssoc.LEFT),
         (
             (IN | NOT_IN) + in_list,
+            UNARY,
+            opAssoc.LEFT,
+        ),
+        (
+            (LIKE | NOT_LIKE) + like_string,
             UNARY,
             opAssoc.LEFT,
         ),
@@ -84,7 +142,7 @@ def extract_identifiers(parsed_expression):
     if isinstance(parsed_expression, ParseResults):
         for item in parsed_expression:
             if isinstance(item, ParseResults) and item.col:
-                identifiers.append(item.col[0].upper())
+                identifiers.append(item.col[4:-2]) # todo: ugly
             elif isinstance(item, ParseResults):
                 identifiers.extend(extract_identifiers(item))
     return identifiers
@@ -92,6 +150,10 @@ def extract_identifiers(parsed_expression):
 
 def parse(expression):
     return expr.parseString(expression)[0]
+
+
+def transform_to_pandas(expression):
+    return expr.expr.transformString(expression)
 
 
 def main():
@@ -120,6 +182,10 @@ def main():
 
 
 if __name__ == "__main__":
-#    main()
-    p = expr.parseString("ff NOT IN (1,2,4,5) and dd in ('a','b')")
-    print(p[0])
+    #    main()
+    #~df['ff'].isin([1, 2, 4, 5]) & df['dd'].str.contains('#ASDF#')
+    # df['FF'].isin([1, 2, 4, 5]) & df['DD'].str.contains('##ASDF##')
+    # p = expr.parseString("ff IN (1,2,4,5) and dd like '%##ASDF##%'")
+    p = expr.transformString("ff IN (1,2,4,5) and dd like '%##ASDF##%'")
+    print(p)
+    print(' '.join(e))
