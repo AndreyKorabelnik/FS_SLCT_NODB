@@ -54,7 +54,6 @@ def transform_like_string(tokens):
     return f"('{tokens[0]}')"
 
 
-
 ParserElement.enablePackrat()
 
 LPAR, RPAR, COMMA = map(Suppress, "(),")
@@ -64,7 +63,7 @@ AND = CaselessKeyword('AND').setResultsName("keyword").setParseAction(transform_
 OR = CaselessKeyword('OR').setResultsName("keyword").setParseAction(transform_or)
 CASE = CaselessKeyword('CASE').setResultsName("keyword").setParseAction(transform_keyword)
 WHEN = CaselessKeyword('WHEN').setResultsName("keyword").setParseAction(transform_keyword)
-THEN= CaselessKeyword('THEN').setResultsName("keyword").setParseAction(transform_keyword)
+THEN = CaselessKeyword('THEN').setResultsName("keyword").setParseAction(transform_keyword)
 IS = CaselessKeyword('IS').setResultsName("keyword").setParseAction(transform_keyword)
 NULL = CaselessKeyword('NULL').setResultsName("keyword").setParseAction(transform_keyword)
 NOT = CaselessKeyword('NOT').setResultsName("keyword").setParseAction(transform_not)
@@ -76,7 +75,7 @@ NOT_BETWEEN = Group(NOT + BETWEEN).setResultsName("keyword").setParseAction(tran
 NOT_IN = Group(NOT + IN).setResultsName("keyword").setParseAction(transform_not_in)
 NOT_LIKE = Group(NOT + LIKE).setResultsName("keyword").setParseAction(transform_not_like)
 
-keywords = [AND, OR, LIKE, IN] # todo add others
+keywords = [AND, OR, LIKE, IN]  # todo add others
 any_keyword = MatchFirst(keywords)
 
 quoted_identifier = QuotedString('"', escQuote='""')
@@ -84,7 +83,8 @@ identifier = (~any_keyword + Word(alphas, alphanums + "_")).setParseAction(pypar
              quoted_identifier
 identifier = identifier.setResultsName("col").setParseAction(transform_identifier)
 
-like_string = QuotedString("'%", end_quote_char="%'").setResultsName("like_string").setParseAction(transform_like_string)
+like_string = QuotedString("'%", end_quote_char="%'").setResultsName("like_string").setParseAction(
+    transform_like_string)
 
 expr = Forward().setName("expression")
 
@@ -142,7 +142,7 @@ def extract_identifiers(parsed_expression):
     if isinstance(parsed_expression, ParseResults):
         for item in parsed_expression:
             if isinstance(item, ParseResults) and item.col:
-                identifiers.append(item.col[4:-2]) # todo: ugly
+                identifiers.append(item.col[4:-2])  # todo: ugly
             elif isinstance(item, ParseResults):
                 identifiers.extend(extract_identifiers(item))
     return identifiers
@@ -183,9 +183,8 @@ def main():
 
 if __name__ == "__main__":
     #    main()
-    #~df['ff'].isin([1, 2, 4, 5]) & df['dd'].str.contains('#ASDF#')
+    # ~df['ff'].isin([1, 2, 4, 5]) & df['dd'].str.contains('#ASDF#')
     # df['FF'].isin([1, 2, 4, 5]) & df['DD'].str.contains('##ASDF##')
     # p = expr.parseString("ff IN (1,2,4,5) and dd like '%##ASDF##%'")
     p = expr.transformString("ff IN (1,2,4,5) and dd like '%##ASDF##%'")
     print(p)
-    print(' '.join(e))
