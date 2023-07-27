@@ -30,7 +30,12 @@
         },
         {
           "filter_id": 3,
-          "expression": "LISTING_RANK<100",
+          "expression": "LISTING_RANK<10",
+          "application_level": 2
+        },
+        {
+          "filter_id": 4,
+          "expression": "LISTING_EXPRESSION>0",
           "application_level": 2
         }
       ]

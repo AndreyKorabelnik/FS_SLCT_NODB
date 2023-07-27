@@ -19,442 +19,442 @@
         {
           "selection_id": 26535,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('AU') and size_group IN ('S')"
+          "expression": "country_code IN ('AU') and size_group IN ('S')"
         },
         {
           "selection_id": 26536,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BE')"
+          "expression": "country_code IN ('BE')"
         },
         {
           "selection_id": 26537,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BE') and size_group IN ('L')"
+          "expression": "country_code IN ('BE') and size_group IN ('L')"
         },
         {
           "selection_id": 26538,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BE') and size_group IN ('M')"
+          "expression": "country_code IN ('BE') and size_group IN ('M')"
         },
         {
           "selection_id": 26539,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BE') and size_group IN ('S')"
+          "expression": "country_code IN ('BE') and size_group IN ('S')"
         },
         {
           "selection_id": 26540,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BR')"
+          "expression": "country_code IN ('BR')"
         },
         {
           "selection_id": 26541,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BR') and size_group IN ('L')"
+          "expression": "country_code IN ('BR') and size_group IN ('L')"
         },
         {
           "selection_id": 26542,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BR') and size_group IN ('M')"
+          "expression": "country_code IN ('BR') and size_group IN ('M')"
         },
         {
           "selection_id": 26543,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('BR') and size_group IN ('S')"
+          "expression": "country_code IN ('BR') and size_group IN ('S')"
         },
         {
           "selection_id": 26544,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CA')"
+          "expression": "country_code IN ('CA')"
         },
         {
           "selection_id": 26545,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CA') and size_group IN ('L')"
+          "expression": "country_code IN ('CA') and size_group IN ('L')"
         },
         {
           "selection_id": 26546,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CA') and size_group IN ('M')"
+          "expression": "country_code IN ('CA') and size_group IN ('M')"
         },
         {
           "selection_id": 26547,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CA') and size_group IN ('S')"
+          "expression": "country_code IN ('CA') and size_group IN ('S')"
         },
         {
           "selection_id": 26548,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CH')"
+          "expression": "country_code IN ('CH')"
         },
         {
           "selection_id": 26549,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CH') and size_group IN ('L')"
+          "expression": "country_code IN ('CH') and size_group IN ('L')"
         },
         {
           "selection_id": 26550,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CH') and size_group IN ('M')"
+          "expression": "country_code IN ('CH') and size_group IN ('M')"
         },
         {
           "selection_id": 26551,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CH') and size_group IN ('S')"
+          "expression": "country_code IN ('CH') and size_group IN ('S')"
         },
         {
           "selection_id": 26552,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CL')"
+          "expression": "country_code IN ('CL')"
         },
         {
           "selection_id": 26553,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CL') and size_group IN ('L')"
+          "expression": "country_code IN ('CL') and size_group IN ('L')"
         },
         {
           "selection_id": 26554,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CL') and size_group IN ('M')"
+          "expression": "country_code IN ('CL') and size_group IN ('M')"
         },
         {
           "selection_id": 26555,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CL') and size_group IN ('S')"
+          "expression": "country_code IN ('CL') and size_group IN ('S')"
         },
         {
           "selection_id": 26556,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CN')"
+          "expression": "country_code IN ('CN')"
         },
         {
           "selection_id": 26557,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CN') and size_group IN ('L')"
+          "expression": "country_code IN ('CN') and size_group IN ('L')"
         },
         {
           "selection_id": 26558,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CN') and size_group IN ('M')"
+          "expression": "country_code IN ('CN') and size_group IN ('M')"
         },
         {
           "selection_id": 26559,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CN') and size_group IN ('S')"
+          "expression": "country_code IN ('CN') and size_group IN ('S')"
         },
         {
           "selection_id": 26560,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CO')"
+          "expression": "country_code IN ('CO')"
         },
         {
           "selection_id": 26561,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CO') and size_group IN ('L')"
+          "expression": "country_code IN ('CO') and size_group IN ('L')"
         },
         {
           "selection_id": 26562,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CO') and size_group IN ('M')"
+          "expression": "country_code IN ('CO') and size_group IN ('M')"
         },
         {
           "selection_id": 26563,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CO') and size_group IN ('S')"
+          "expression": "country_code IN ('CO') and size_group IN ('S')"
         },
         {
           "selection_id": 26564,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CZ')"
+          "expression": "country_code IN ('CZ')"
         },
         {
           "selection_id": 26565,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CZ') and size_group IN ('L')"
+          "expression": "country_code IN ('CZ') and size_group IN ('L')"
         },
         {
           "selection_id": 26566,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CZ') and size_group IN ('M')"
+          "expression": "country_code IN ('CZ') and size_group IN ('M')"
         },
         {
           "selection_id": 26567,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('CZ') and size_group IN ('S')"
+          "expression": "country_code IN ('CZ') and size_group IN ('S')"
         },
         {
           "selection_id": 26568,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26568,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('10')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('10')"
         },
         {
           "selection_id": 26569,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26569,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('15')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('15')"
         },
         {
           "selection_id": 26570,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26570,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('20')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('20')"
         },
         {
           "selection_id": 26571,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26571,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('30')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('30')"
         },
         {
           "selection_id": 26572,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26572,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('35')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('35')"
         },
         {
           "selection_id": 26573,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26573,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('40')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('40')"
         },
         {
           "selection_id": 26574,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26574,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('45')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('45')"
         },
         {
           "selection_id": 26575,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26575,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('50')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('50')"
         },
         {
           "selection_id": 26576,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26576,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('55')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('55')"
         },
         {
           "selection_id": 26577,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26577,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('60')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('60')"
         },
         {
           "selection_id": 26578,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26578,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L','M') and icb5_industry_code IN ('65')"
+          "expression": "size_group IN ('L','M') and icb5_industry_code IN ('65')"
         },
         {
           "selection_id": 26579,
           "filter_id": 1,
-          "filter_expression": "country_code NOT IN ('GB')"
+          "expression": "country_code NOT IN ('GB')"
         },
         {
           "selection_id": 26579,
           "filter_id": 2,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26580,
           "filter_id": 1,
-          "filter_expression": "country_code NOT IN ('GB') and size_group IN ('L')"
+          "expression": "country_code NOT IN ('GB') and size_group IN ('L')"
         },
         {
           "selection_id": 26580,
           "filter_id": 2,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26581,
           "filter_id": 1,
-          "filter_expression": "country_code NOT IN ('GB') and size_group IN ('M')"
+          "expression": "country_code NOT IN ('GB') and size_group IN ('M')"
         },
         {
           "selection_id": 26581,
           "filter_id": 2,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26582,
           "filter_id": 1,
-          "filter_expression": "country_code NOT IN ('GB') and size_group IN ('S')"
+          "expression": "country_code NOT IN ('GB') and size_group IN ('S')"
         },
         {
           "selection_id": 26582,
           "filter_id": 2,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26583,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26584,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26584,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L')"
+          "expression": "size_group IN ('L')"
         },
         {
           "selection_id": 26585,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26585,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('M')"
+          "expression": "size_group IN ('M')"
         },
         {
           "selection_id": 26586,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROPE##%'"
+          "expression": "region_name like '%##SW_DM_EUROPE##%'"
         },
         {
           "selection_id": 26586,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('S')"
+          "expression": "size_group IN ('S')"
         },
         {
           "selection_id": 26587,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROZONE##%'"
+          "expression": "region_name like '%##SW_DM_EUROZONE##%'"
         },
         {
           "selection_id": 26588,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROZONE##%'"
+          "expression": "region_name like '%##SW_DM_EUROZONE##%'"
         },
         {
           "selection_id": 26588,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L')"
+          "expression": "size_group IN ('L')"
         },
         {
           "selection_id": 26589,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROZONE##%'"
+          "expression": "region_name like '%##SW_DM_EUROZONE##%'"
         },
         {
           "selection_id": 26589,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('M')"
+          "expression": "size_group IN ('M')"
         },
         {
           "selection_id": 26590,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_EUROZONE##%'"
+          "expression": "region_name like '%##SW_DM_EUROZONE##%'"
         },
         {
           "selection_id": 26590,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('S')"
+          "expression": "size_group IN ('S')"
         },
         {
           "selection_id": 26591,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('DK')"
+          "expression": "country_code IN ('DK')"
         },
         {
           "selection_id": 26592,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('DK') and size_group IN ('L')"
+          "expression": "country_code IN ('DK') and size_group IN ('L')"
         },
         {
           "selection_id": 26593,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('DK') and size_group IN ('M')"
+          "expression": "country_code IN ('DK') and size_group IN ('M')"
         },
         {
           "selection_id": 26594,
           "filter_id": 1,
-          "filter_expression": "country_code IN ('DK') and size_group IN ('S')"
+          "expression": "country_code IN ('DK') and size_group IN ('S')"
         },
         {
           "selection_id": 26595,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
+          "expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
         },
         {
           "selection_id": 26596,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
+          "expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
         },
         {
           "selection_id": 26596,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('L')"
+          "expression": "size_group IN ('L')"
         },
         {
           "selection_id": 26597,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
+          "expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
         },
         {
           "selection_id": 26597,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('M')"
+          "expression": "size_group IN ('M')"
         },
         {
           "selection_id": 26598,
           "filter_id": 1,
-          "filter_expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
+          "expression": "region_name like '%##SW_DM_SOUTH_KOREA##%'"
         },
         {
           "selection_id": 26598,
           "filter_id": 2,
-          "filter_expression": "size_group IN ('S')"
+          "expression": "size_group IN ('S')"
         }
       ]
     }
