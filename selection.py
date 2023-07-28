@@ -80,6 +80,11 @@ def add_universe_attributes(df, universe_data):
     return df
 
 
+# todo: filter needs to add own versions of attributes as there might be scenario like this
+# level 1: filter_1: rank_by_turnover<100
+# level 2: filter_2: rank_by_mcap<100
+# level 3: filter_3: rank_by_turnover<10
+# so filter_3 can't use rank_by_turnover calculated by filter_1 as there is rank_by_mcap<100 filter in between
 def add_filter(df, selection_id, filter_id, filter_expression):
     # add filter column after underlying attributes are added
     # todo: add condition that all preceding filters are True
