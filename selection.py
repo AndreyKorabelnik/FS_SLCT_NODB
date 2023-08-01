@@ -1,6 +1,7 @@
-import general, os
 import json
 import pandas as pd
+import general
+import os
 import sql_expr_parser
 
 
@@ -42,41 +43,48 @@ def get_leveled_attributes(universe_data):
     return leveled_attrs
 
 
+def get_df_column_name(attr_code, universe_data, level):
+    attr_type = next(attr['attr_type'] for attr in universe_data['attributes'] if attr['attr_code'] == attr_code)
+    if attr_type == 'INPUT':
+        return attr_code
+    else:
+        return f"{attr_code}_{level}"
+
+
 # add attribute columns to df starting from lowest level
 # todo: make sure that all INPUT attributes are in input_data_file
-def add_universe_attributes(df, universe_data):
+def add_level_attributes(df, universe_data, level_attributes, level):
     leveled_attrs = get_leveled_attributes(universe_data)
-    relevant_attrs = [attr for attr in universe_data['attributes']
-                      if attr['attr_type'] != 'INPUT'
-                      and attr['attr_code'] not in df.columns.tolist()]
     # run through all attributes in universe_data sorted by level from leveled_attrs
-    for attr in sorted(relevant_attrs, key=lambda x: leveled_attrs[x['attr_code']]):
+    for attr in sorted(level_attributes, key=lambda x: leveled_attrs[x['attr_code']]):
+        df_column_name = get_df_column_name(attr['attr_code'], universe_data, level)
         if attr['attr_type'] == 'RANK':
-            rank_attrs = [a['attr_code'] for a in sorted(attr['rank_attrs'], key=lambda x: x['order'])]
+            rank_attrs = [get_df_column_name(a['attr_code'], universe_data, level)
+                          for a in sorted(attr['rank_attrs'], key=lambda x: x['order'])]
             #  todo: note that it takes only first rank attribute's direction,
             #   need to support separate direction for each attr
             is_ascending = True if attr['rank_attrs'][0]['direction'] == 'ASC' else False
             if 'partition_by' in attr and attr['partition_by']:
-                ranks = df.groupby(attr['partition_by'])[rank_attrs].apply(tuple).rank(
-                    method='first',
-                    ascending=is_ascending)
+                ranks = df.groupby(get_df_column_name(attr['partition_by'], universe_data, level))[rank_attrs].apply(
+                    tuple).rank(method='first',
+                                ascending=is_ascending)
             else:
                 ranks = df[rank_attrs].apply(tuple).rank(method='first',
                                                          ascending=is_ascending)
             # without reseting all values are NaN in df
             ranks.reset_index(drop=True, inplace=True)
-            df[attr['attr_code']] = ranks
+            df[df_column_name] = ranks
         elif attr['attr_type'] == 'EXPRESSION':
-            df[attr['attr_code']] = eval(sql_expr_parser.transform_to_pandas(attr['expression']))
+            df[df_column_name] = eval(sql_expr_parser.transform_to_pandas(attr['expression']))
         elif attr['attr_type'] == 'AGGREGATE':
-            aggr_attr = attr['aggregate_attr_code']
+            aggr_attr = get_df_column_name(attr['aggregate_attr_code'], universe_data, level)
             aggr_func = attr['aggregate_function']
             # todo: aggr_func not sum
             if 'partition_by' in attr and attr['partition_by']:
-                aggrs = df.groupby(attr['partition_by'])[aggr_attr].sum()
+                aggrs = df.groupby(get_df_column_name(attr['partition_by'], universe_data, level))[aggr_attr].sum()
             else:
                 aggrs = df[aggr_attr].sum()
-            df[attr['attr_code']] = aggrs
+            df[df_column_name] = aggrs
     return df
 
 
@@ -98,10 +106,17 @@ def get_failed_filters(row, selection_id):
 
 def run_selections(selections, universe_data, input_file):
     df = pd.read_csv(input_file)
-    df = add_universe_attributes(df, universe_data)
+    leveled_attrs = get_leveled_attributes(universe_data)
     for s in selections['selections']:
-        for f in sorted(s['filters'], key=lambda x: x['application_level']):
-            df = add_filter(df, s['selection_id'], f['filter_id'], f['expression'])
+        for lvl in sorted(set(f['application_level'] for f in s['filters'])):
+            # todo: add to level_attributes only attributes relevan to filters from the application level
+            level_attributes = [attr for attr in universe_data['attributes']
+                                if attr['attr_type'] != 'INPUT'
+                                and attr['attr_code'] not in df.columns.tolist()]
+            df = add_level_attributes(df, universe_data, level_attributes, lvl)
+            for f in s['filters']:
+                if f['application_level'] == lvl:
+                    df = add_filter(df, s['selection_id'], f['filter_id'], f['expression'])
         df[f"is_selected_{s['selection_id']}"] = df.eval(
             f" and ".join(f"filter_{s['selection_id']}_{f['filter_id']} == True" for f in s['filters']))
         df[f"failed_filters_{s['selection_id']}"] = df.apply(get_failed_filters, axis=1, selection_id=s['selection_id'])
@@ -142,9 +157,5 @@ def run(client_input_folder, client_output_folder):
             df_out.to_csv(file, index=False, lineterminator='')
 
 
-if __name__== '__main__':
-    run('source_data','output/test')
-
-
-
-
+if __name__ == '__main__':
+    run('source_data', 'output/test')
