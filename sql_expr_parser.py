@@ -2,11 +2,11 @@
 from pyparsing import *
 
 
-def replace_lpar(tokens):
+def transform_lpar(tokens):
     return "(["
 
 
-def replace_rpar(tokens):
+def transform_rpar(tokens):
     return "])"
 
 
@@ -92,9 +92,9 @@ numeric_literal = pyparsing_common.number
 string_literal = QuotedString("'", escQuote="''")
 literal_value = (numeric_literal | string_literal | NULL)
 
-in_list = LPAR.setParseAction(replace_lpar) + \
+in_list = LPAR.setParseAction(transform_lpar) + \
           Group(delimitedList(expr)).setResultsName("values_list").setParseAction(transform_list) + \
-          RPAR.setParseAction(replace_rpar)
+          RPAR.setParseAction(transform_rpar)
 
 expr_term = (
         in_list
@@ -153,7 +153,7 @@ def parse(expression):
 
 
 def transform_to_pandas(expression):
-    return expr.expr.transformString(expression)
+    return expr.transformString(expression)
 
 
 def main():
