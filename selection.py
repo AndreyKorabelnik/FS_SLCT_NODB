@@ -1,8 +1,5 @@
-import json
-import os
-
+import json, os
 import pandas as pd
-
 import general
 import sql_expr_parser
 
