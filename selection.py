@@ -14,7 +14,6 @@ def add_attribute(df, attr_code, universe_attributes, preceding_filters_column):
         if attr['attr_type'] == 'RANK':
             for a in attr['rank_attrs']:
                 add_attribute(df, a['attr_code'], universe_attributes, preceding_filters_column)
-                # (1 if a['direction'] == 'ASC' else -1)
             rank_attrs = [(a['attr_code'], a['direction'])
                           for a in sorted(attr['rank_attrs'], key=lambda x: x['order'])]
             if preceding_filters_column:
@@ -41,12 +40,11 @@ def add_attribute(df, attr_code, universe_attributes, preceding_filters_column):
                     axis=1)
                 aggr_attr = f'{aggr_attr}_aux'
             aggr_func = attr['aggregate_function']
-            # todo: aggr_func not sum
             if 'partition_by' in attr and attr['partition_by']:
                 add_attribute(df, attr['partition_by'], universe_attributes, preceding_filters_column)
-                aggrs = df.groupby(attr['partition_by'])[aggr_attr].sum()
+                aggrs = df.groupby(attr['partition_by'])[aggr_attr].apply(aggr_func)
             else:
-                aggrs = df[aggr_attr].sum()
+                aggrs = df[aggr_attr].apply(aggr_func)
             df[attr['attr_code']] = aggrs
         elif attr['attr_type'] == 'EXPRESSION':
             # add atributes used in expression
