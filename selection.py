@@ -12,22 +12,22 @@ def add_attribute(df, attr_code, universe_attributes, preceding_filters_column):
     if attr_code not in df.columns.tolist():
         attr = next(attr for attr in universe_attributes if attr['attr_code'] == attr_code)
         if attr['attr_type'] == 'RANK':
-            rank_attrs = [a['attr_code']
+            for a in attr['rank_attrs']:
+                add_attribute(df, a['attr_code'], universe_attributes, preceding_filters_column)
+                # (1 if a['direction'] == 'ASC' else -1)
+            rank_attrs = [(a['attr_code'], a['direction'])
                           for a in sorted(attr['rank_attrs'], key=lambda x: x['order'])]
-            for a in rank_attrs:
-                add_attribute(df, a, universe_attributes, preceding_filters_column)
             if preceding_filters_column:
-                # apply preceding filters first
-                rank_attrs.insert(0, preceding_filters_column)
-            #  todo: note that it takes only first rank attribute's direction,
-            #        need to support separate direction for each attr
-            is_ascending = True if attr['rank_attrs'][0]['direction'] == 'ASC' else False
+                # apply preceding filters first. it ranks DESC to make rows passed filters more priority
+                rank_attrs.insert(0, (preceding_filters_column, 'DESC'))
+            combine_rank_attr = f"{attr['attr_code']}_aux"
+            df[combine_rank_attr] = df.apply(lambda row: tuple((-1 if direction == 'DESC' else 1) * row[a]
+                                                               for (a, direction) in rank_attrs), axis=1)
             if 'partition_by' in attr and attr['partition_by']:
                 add_attribute(df, attr['partition_by'], universe_attributes, preceding_filters_column)
-                ranks = df.groupby(attr['partition_by'])[rank_attrs].apply(tuple).rank(method='first',
-                                                                                       ascending=is_ascending)
+                ranks = df.groupby(attr['partition_by'])[combine_rank_attr].rank(method='first')
             else:
-                ranks = df[rank_attrs].apply(tuple).rank(method='first', ascending=is_ascending)
+                ranks = df[combine_rank_attr].rank(method='first')
             # without reseting all values are NaN in df
             ranks.reset_index(drop=True, inplace=True)
             df[attr['attr_code']] = ranks
@@ -43,7 +43,7 @@ def add_attribute(df, attr_code, universe_attributes, preceding_filters_column):
             aggr_func = attr['aggregate_function']
             # todo: aggr_func not sum
             if 'partition_by' in attr and attr['partition_by']:
-                add_attribute(df, aggr_attr, universe_attributes, preceding_filters_column)
+                add_attribute(df, attr['partition_by'], universe_attributes, preceding_filters_column)
                 aggrs = df.groupby(attr['partition_by'])[aggr_attr].sum()
             else:
                 aggrs = df[aggr_attr].sum()
@@ -103,15 +103,11 @@ def get_selection_results(selection_id, df):
 # todo: make sure that all INPUT attributes are in input_data_file
 def run(client_input_folder, client_output_folder):
     general.make_dir(client_output_folder)
-    universe_file = os.path.join(client_input_folder, 'universe.json')
-    selection_file = os.path.join(client_input_folder, 'selection.json')
-    input_file = os.path.join(client_input_folder, 'input_data.csv')
-
-    with open(universe_file, 'r') as file:
+    with open(os.path.join(client_input_folder, 'universe.json'), 'r') as file:
         universe = json.load(file)
-    with open(selection_file, 'r') as file:
+    with open(os.path.join(client_input_folder, 'selection.json'), 'r') as file:
         selections = json.load(file)
-    df = pd.read_csv(input_file)
+    df = pd.read_csv(os.path.join(client_input_folder, 'input_data.csv'))
     for s in selections['selections']:
         df = run_selection(s['selection_id'], s['filters'], universe['attributes'], df)
         df_out = get_selection_results(s['selection_id'], df)
