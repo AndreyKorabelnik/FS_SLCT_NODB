@@ -7,7 +7,6 @@ import sql_expr_parser
 import pandas as pd
 
 
-
 def get_attribute(attr_code, universe_attributes):
     return next(attr for attr in universe_attributes if attr.code == attr_code)
 
