@@ -31,7 +31,7 @@ def add_attribute(df, attr_code, universe_attributes, preceding_filters_column):
     return df
 
 
-def get_failed_filters(row, selection_id):
+def get_failed_filters_columns(row, selection_id):
     return '; '.join(c for c in row.index[row == False].tolist() if c.startswith(f'filter_{selection_id}'))
 
 
@@ -52,7 +52,7 @@ def run_selection(selection, universe_attributes, df):
     df[f"is_selected_{selection.id}"] = df.eval(
         f" and ".join(f"{selection.get_filter_name(filter_id)} == True"
                       for filter_id, _, _ in selection.get_filters()))
-    df[f"failed_filters_{selection.id}"] = df.apply(get_failed_filters, axis=1, selection_id=selection.id)
+    df[f"failed_filters_{selection.id}"] = df.apply(get_failed_filters_columns, axis=1, selection_id=selection.id)
     return df
 
 
