@@ -28,7 +28,7 @@ def send_file(filename, host, port):
 
 
 print(__name__)
-filename = '/source_data/input_data.csv'
+filename = '/source_data/input_data_big.csv'
 send_file(filename, SERVER_HOST, SERVER_PORT)
 
 # if __name__ == "__main__":
