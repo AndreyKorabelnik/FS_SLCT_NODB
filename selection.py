@@ -63,6 +63,7 @@ def run_selection(selection: selections.Selection, universe_attributes: List[att
             if application_level == lvl:
                 for attr_code in sql_expr_parser.extract_identifiers(sql_expr_parser.parse(expression)):
                     df = add_attribute(df, attr_code, universe_attributes, curr_filters_column)
+                    selection.add_attr_code(attr_code)
                 df[selection.get_filter_name(filter_id)] = eval(sql_expr_parser.transform_to_pandas(expression))
         curr_filters_column = f"is_selected_{selection_id}_level_{lvl}"
         df[curr_filters_column] = df.eval(
@@ -76,22 +77,25 @@ def run_selection(selection: selections.Selection, universe_attributes: List[att
     return df
 
 
-def get_selection_results(selection: selections.Selection, df: pd.DataFrame) -> pd.DataFrame:
+def get_selection_results(selection: selections.Selection, key_column: str, df: pd.DataFrame) -> pd.DataFrame:
     """
     Returns df with all attributes and only selection_id relevant "filter" and "is_selected" columns
     """
-    # todo: add options to
-    #       - show only KEY attribute column,
-    #       - don't show filter_, failed_filter_ columns
     selection_id = selection.get_id()
-    relevant_columns = (c for c in df.columns.tolist()
-                        if c.startswith(f"filter_{selection_id}_")
-                        or c == f"is_selected_{selection_id}"
-                        or c == f"failed_filters_{selection_id}"
-                        or not any(c.startswith(substring) for substring in ['filter_',
-                                                                             'is_selected_',
-                                                                             'failed_filters_']))
-    return df[relevant_columns]
+    show_all, add_attributes, add_filters = selection.get_output_settings()
+    relevant_columns = [c for c in df.columns.tolist()
+                        if c == key_column
+                        or (c == f"is_selected_{selection_id}" and show_all)]
+    if add_attributes:
+        relevant_columns.extend(selection.get_attr_codes())
+    if add_filters:
+        relevant_columns.extend(c for c in df.columns.tolist()
+                                if c.startswith(f"filter_{selection_id}_")
+                                or c == f"failed_filters_{selection_id}")
+    if show_all:
+        return df[relevant_columns]
+    else:
+        return df[df[f'is_selected_{selection_id}'] == 1][relevant_columns]
 
 
 def get_inputs(client_input_folder: str) -> (pd.DataFrame, List[attributes.Attribute], List[selections.Selection]):
@@ -104,16 +108,17 @@ def get_inputs(client_input_folder: str) -> (pd.DataFrame, List[attributes.Attri
         selections_src = json.load(file)
     df = pd.read_csv(os.path.join(client_input_folder, INPUT_DATA_FILE_NAME))
     universe_attributes = attributes.get_universe_attributes(universe_src['attributes'])
+    key_column = universe_src['key']
     sels = selections.get_selections(selections_src['selections'])
-    return df, universe_attributes, sels
+    return df, universe_attributes, sels, key_column
 
 
 # todo: make sure that all INPUT attributes are in input_data_file
 def run(client_input_folder: str, client_output_folder: str):
-    df, universe_attributes, sels = get_inputs(client_input_folder)
+    df, universe_attributes, sels, key_column = get_inputs(client_input_folder)
     for selection in sels:
         df = run_selection(selection, universe_attributes, df)
-        df_out = get_selection_results(selection, df)
+        df_out = get_selection_results(selection, key_column, df)
         output_file_name = os.path.join(client_output_folder, f'output_{selection.get_id()}.csv')
         with open(output_file_name, 'w') as file:
             df_out.to_csv(file, index=False, lineterminator='')

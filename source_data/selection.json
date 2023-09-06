@@ -13,7 +13,12 @@
           "expression": "region_name like '%##DEV-EMER-MARKET##%'",
           "application_level": 1
         }
-      ]
+      ],
+      "output": {
+        "show_all": 1,
+        "add_attributes": 0,
+        "add_filters": 0
+      }
     },
     {
       "selection_id": 33074,
@@ -38,7 +43,12 @@
           "expression": "LISTING_EXPRESSION>0",
           "application_level": 2
         }
-      ]
+      ],
+      "output": {
+        "show_all": 1,
+        "add_attributes": 1,
+        "add_filters": 1
+      }
     }
   ]
 }
