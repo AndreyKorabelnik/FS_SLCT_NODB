@@ -1,6 +1,7 @@
 import json
 import os
 from typing import List
+from collections import defaultdict
 
 import pandas as pd
 
@@ -79,7 +80,7 @@ def run_selection(selection: selections.Selection, universe_attributes: List[att
 
 def get_selection_results(selection: selections.Selection, key_column: str, df: pd.DataFrame) -> pd.DataFrame:
     """
-    Returns df with all attributes and only selection_id relevant "filter" and "is_selected" columns
+    Returns df with attributes, filters relevant to selection
     """
     selection_id = selection.get_id()
     show_all, add_attributes, add_filters = selection.get_output_settings()
@@ -102,14 +103,17 @@ def get_inputs(client_input_folder: str) -> (pd.DataFrame, List[attributes.Attri
     """
     Extracts inputs from client_input_folder
     """
+    df = pd.read_csv(os.path.join(client_input_folder, INPUT_DATA_FILE_NAME))
+
     with open(os.path.join(client_input_folder, UNIVERSE_FILE_NAME), 'r') as file:
         universe_src = json.load(file)
-    with open(os.path.join(client_input_folder, SELECTIONS_FILE_NAME), 'r') as file:
-        selections_src = json.load(file)
-    df = pd.read_csv(os.path.join(client_input_folder, INPUT_DATA_FILE_NAME))
     universe_attributes = attributes.get_universe_attributes(universe_src['attributes'])
     key_column = universe_src['key']
+
+    with open(os.path.join(client_input_folder, SELECTIONS_FILE_NAME), 'r') as file:
+        selections_src = json.load(file)
     sels = selections.get_selections(selections_src['selections'])
+
     return df, universe_attributes, sels, key_column
 
 
@@ -124,5 +128,44 @@ def run(client_input_folder: str, client_output_folder: str):
             df_out.to_csv(file, index=False, lineterminator='')
 
 
+def build_selection_sql(selection: selections.Selection, universe_attributes: List[attributes.Attribute]) -> str:
+    input_attrs = {a.code for a in universe_attributes if type(a) == attributes.AttributeInput}
+    sql_query = 'df'
+    for lvl in selection.get_application_levels():
+        attr_code_dependencies = defaultdict(list)
+        for filter_id, expression, application_level in selection.get_filters():
+            if application_level == lvl:
+                # get all attributes from filters of the application_level
+                for attr_code in sql_expr_parser.extract_identifiers(sql_expr_parser.parse(expression)):
+                    attr_code_dependencies[attr_code] = [dep for dep in get_attribute_dependencies(attr_code,
+                                                                                                   universe_attributes)
+                                                         if dep not in input_attrs]
+        sql_level = 0
+        sql_level_attrs = defaultdict(set)
+        sql_level_attrs[sql_level].update(input_attrs)
+        flag = True
+        while flag:
+            sql_level += 1
+            flag = False
+            for _, deps in attr_code_dependencies.items():
+                if deps:
+                    flag = True
+                    dep = deps.pop()
+                    sql_level_attrs[sql_level].add(dep)
+        for l in range(sql_level):
+            columns = ','.join(get_attribute(attr_code, universe_attributes).get_sql_expression()
+                               for attr_code in sql_level_attrs[l])
+            sql_query = f"select d.*,{columns} from ({sql_query}) d"
+        filters = ','.join(f"case when {expression} then 1 else 0 end as filter_{filter_id}"
+                           for filter_id, expression, application_level in selection.get_filters()
+                           if application_level == lvl)
+        sql_query = f"select d.*,{filters} from ({sql_query}) d"
+
+    print(sql_query)
+
+
 if __name__ == '__main__':
-    run('source_data', 'output/test')
+    # run('source_data', 'output/test')
+    df, universe_attributes, sels, key_column = get_inputs(client_input_folder='source_data')
+    for selection in sels:
+        q = build_selection_sql(selection, universe_attributes)

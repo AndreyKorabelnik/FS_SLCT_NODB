@@ -29,6 +29,9 @@ class Selection:
     def add_attr_code(self,attr_code):
         self.attr_codes.add(attr_code)
 
+    def add_attr_codes(self,attr_codes):
+        self.attr_codes.update(attr_codes)
+
 
 def get_selections(selections: List[Dict]) -> List[Selection]:
     return [Selection(selection['selection_id'], selection['filters'], selection['output']) for selection in selections]
