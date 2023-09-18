@@ -131,6 +131,7 @@ def run(client_input_folder: str, client_output_folder: str):
 def build_selection_sql(selection: selections.Selection, universe_attributes: List[attributes.Attribute]) -> str:
     input_attrs = {a.code for a in universe_attributes if type(a) == attributes.AttributeInput}
     sql_query = 'df'
+
     for lvl in selection.get_application_levels():
         attr_code_dependencies = defaultdict(list)
         for filter_id, expression, application_level in selection.get_filters():
@@ -140,21 +141,23 @@ def build_selection_sql(selection: selections.Selection, universe_attributes: Li
                     attr_code_dependencies[attr_code] = [dep for dep in get_attribute_dependencies(attr_code,
                                                                                                    universe_attributes)
                                                          if dep not in input_attrs]
-        sql_level = 0
+
         sql_level_attrs = defaultdict(set)
-        sql_level_attrs[sql_level].update(input_attrs)
+        sql_level = 0
+        if lvl == 1:
+            sql_level_attrs[sql_level].update(input_attrs)
+            sql_level += 1
         flag = True
         while flag:
-            sql_level += 1
             flag = False
-            for _, deps in attr_code_dependencies.items():
+            for deps in attr_code_dependencies.values():
                 if deps:
+                    sql_level_attrs[sql_level].add(deps.pop())
                     flag = True
-                    dep = deps.pop()
-                    sql_level_attrs[sql_level].add(dep)
-        for l in range(sql_level):
+            sql_level += 1
+        for attr_codes in sql_level_attrs.values():
             columns = ','.join(get_attribute(attr_code, universe_attributes).get_sql_expression()
-                               for attr_code in sql_level_attrs[l])
+                               for attr_code in attr_codes)
             sql_query = f"select d.*,{columns} from ({sql_query}) d"
         filters = ','.join(f"case when {expression} then 1 else 0 end as filter_{filter_id}"
                            for filter_id, expression, application_level in selection.get_filters()
