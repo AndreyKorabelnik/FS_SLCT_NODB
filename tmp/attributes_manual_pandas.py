@@ -13,6 +13,9 @@ class Attribute:
     def get_dependencies(self) -> List[str]:
         raise NotImplementedError("Subclasses should implement this method.")
 
+    def add_to_dataframe(self, df: pd.DataFrame, preceding_filters_column: str = None) -> pd.DataFrame:
+        raise NotImplementedError("Subclasses should implement this method.")
+
     def get_sql_expression(self, preceding_filters: List = None) -> str:
         raise NotImplementedError("Subclasses should implement this method.")
 
@@ -36,6 +39,20 @@ class AttributeRank(Attribute):
                           for a in sorted(self.rank_attrs, key=lambda x: x['order']))
         return rank_attrs
 
+    def add_to_dataframe(self, df: pd.DataFrame, preceding_filters_column: str = None) -> pd.DataFrame:
+        rank_attrs = self._get_rank_attrs(preceding_filters_column)
+        combine_rank_attr = f"{self.code}_aux"
+        df[combine_rank_attr] = df.apply(lambda row: tuple((-1 if direction == 'DESC' else 1) * row[a]
+                                                           for (a, direction) in rank_attrs), axis=1)
+        if self.partition_by:
+            ranks = df.groupby(self.partition_by)[combine_rank_attr].rank(method='first')
+        else:
+            ranks = df[combine_rank_attr].rank(method='first')
+        # without reseting all values are NaN in df
+        ranks.reset_index(drop=True, inplace=True)
+        df[self.code] = ranks
+        return df
+
     def get_sql_expression(self, preceding_filters: List = None) -> str:
         rank_attrs = ','.join(f"{attr_code} {direction}"
                               for attr_code, direction in self._get_rank_attrs(preceding_filters))
@@ -58,6 +75,20 @@ class AttributeAggregate(Attribute):
             r.append(self.partition_by)
         return r
 
+    def add_to_dataframe(self, df: pd.DataFrame, preceding_filters_column: str = None) -> pd.DataFrame:
+        aggr_attr = self.aggregate_attr_code
+        if preceding_filters_column:
+            # apply preceding filters first
+            df[f'{aggr_attr}_aux'] = df.apply(
+                lambda row: row[aggr_attr] if row[preceding_filters_column] else 0,
+                axis=1)
+            aggr_attr = f'{aggr_attr}_aux'
+        if self.partition_by:
+            df[self.code] = df.groupby(self.partition_by)[aggr_attr].apply(self.aggregate_function)
+        else:
+            df[self.code] = df[aggr_attr].apply(self.aggregate_function)
+        return df
+
     def get_sql_expression(self, preceding_filters: List = None) -> str:
         if preceding_filters:
             aux_string = " and ".join(f"{preceding_filter}=1" for preceding_filter in preceding_filters)
@@ -75,6 +106,10 @@ class AttributeExpression(Attribute):
         super().__init__(code, data_type)
         self.expression = expression
 
+    def add_to_dataframe(self, df: pd.DataFrame, preceding_filters_column: str = None) -> pd.DataFrame:
+        df[self.code] = eval(sql_expr_parser.transform_to_pandas(self.expression))
+        return df
+
     def get_dependencies(self) -> List[str]:
         return sql_expr_parser.extract_identifiers(sql_expr_parser.parse(self.expression))
 
@@ -85,6 +120,10 @@ class AttributeExpression(Attribute):
 class AttributeInput(Attribute):
     def get_dependencies(self) -> List[str]:
         return []
+
+    def add_to_dataframe(self, df: pd.DataFrame, preceding_filters_column: str = None) -> pd.DataFrame:
+        # Do nothing for input attribute
+        return df
 
     def get_sql_expression(self, preceding_filters: List = None) -> str:
         return self.code
