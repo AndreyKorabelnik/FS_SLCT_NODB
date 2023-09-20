@@ -1,7 +1,4 @@
 from typing import List, Dict, Tuple
-
-import pandas as pd
-
 import sql_expr_parser
 
 
@@ -30,7 +27,7 @@ class AttributeRank(Attribute):
         return r
 
     def _get_rank_attrs(self, preceding_filters: List = None) -> List[Tuple]:
-        # apply preceding filters first. it ranks DESC to make rows passed filters more priority
+        # apply preceding filters first. it ranks DESC to give rows passed filters more priority
         rank_attrs = [(preceding_filter, 'DESC') for preceding_filter in preceding_filters]
         rank_attrs.extend((a['attr_code'], a['direction'])
                           for a in sorted(self.rank_attrs, key=lambda x: x['order']))
@@ -76,7 +73,7 @@ class AttributeExpression(Attribute):
         self.expression = expression
 
     def get_dependencies(self) -> List[str]:
-        return sql_expr_parser.extract_identifiers(sql_expr_parser.parse(self.expression))
+        return sql_expr_parser.extract_identifiers(self.expression)
 
     def get_sql_expression(self, preceding_filters: List = None) -> str:
         return f"{self.expression} as {self.code}"

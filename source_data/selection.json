@@ -17,7 +17,8 @@
       "output": {
         "show_all": 1,
         "add_attributes": 0,
-        "add_filters": 0
+        "add_filters": 0,
+        "add_failed_filters": 0
       }
     },
     {
@@ -47,7 +48,8 @@
       "output": {
         "show_all": 1,
         "add_attributes": 1,
-        "add_filters": 1
+        "add_filters": 1,
+        "add_failed_filters": 1
       }
     }
   ]

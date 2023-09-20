@@ -18,11 +18,13 @@ class Selection:
                 if f['application_level'] == application_level]
 
     def get_output_settings(self) -> Tuple:
-        return self.output['show_all'], self.output['add_attributes'], self.output['add_filters']
+        return (self.output['show_all'],
+                self.output['add_attributes'],
+                self.output['add_filters'],
+                self.output['add_failed_filters'])
 
     def get_id(self) -> int:
         return self.id
-
 
 
 def get_selections(selections: List[Dict]) -> List[Selection]:
