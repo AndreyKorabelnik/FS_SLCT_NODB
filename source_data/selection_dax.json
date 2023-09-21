@@ -74,7 +74,13 @@
           "application_level": 3
         }
       ],
-      "output": {
+      "output_attrs": [
+        {
+          "attr_code": "RANK_BY_SUM_TURNOVER_12M",
+          "application_level": 2
+        }
+      ],
+      "output_settings": {
         "show_all": 1,
         "add_attributes": 1,
         "add_filters": 1,
