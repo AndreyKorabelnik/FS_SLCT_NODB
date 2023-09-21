@@ -1,0 +1,282 @@
+{
+  "attributes": [
+    {
+      "attr_code": "LISTING_ID",
+      "attr_type": "INPUT",
+      "attr_data_type": "BIGINT"
+    },
+    {
+      "attr_code": "AVG_MCAP_20D",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "AVG_TURNOVER_3M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "SUM_TURNOVER_12M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "SUM_TURNOVER_3M_XETRA",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "XETRA_TRADING_TYPE",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "QTLY_REP_RECD",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IS_HEADQUATER_IN_GERMANY",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "COMPLIANCE_CHECK",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "COMPLIANCE_CHECK_GF_RULE_FLAG",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "SUM_TURNOVER_3M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "ANN_REP_BREACH_4M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IS_EUEFTA_COUNTRY",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "SUM_TURNOVER_12M_XETRA",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "DWH_LISTING_ID",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "DWH_INSTRUMENT_ID",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "QTLY_REP_BREACH_75D",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "COUNTRY_ID",
+      "attr_type": "INPUT",
+      "attr_data_type": "VARCHAR2"
+    },
+    {
+      "attr_code": "ISSUER",
+      "attr_type": "INPUT",
+      "attr_data_type": "VARCHAR2"
+    },
+    {
+      "attr_code": "TRADE_DAYS_6M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IN_EXCLUSION_LIST",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IN_COMPOSITION_MDAX",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "TRADE_DAYS_3M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "ANN_REP_RECD",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "FREE_FLOAT_FACTOR",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "SEMI_ANN_REP_RECD",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "SEMI_ANN_REP_BREACH_3M",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IN_RANKING_LIST_COMPOSITION",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IS_SIBLING_BY_ISSUER_IN_BLUE",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "IN_COMPOSITION_DAX30",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
+      "attr_code": "RANK_BY_AVG_MCAP_20D",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "rank_attrs": [
+        {
+          "attr_code": "AVG_MCAP_20D",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "RANK_BY_ESG_SCORE",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "rank_attrs": [
+        {
+          "attr_code": "ESG_SCORE",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "RANK_BY_SUM_TURNOVER_3M_XETRA",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "rank_attrs": [
+        {
+          "attr_code": "SUM_TURNOVER_3M_XETRA",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "RANK_BY_SUM_TURNOVER_3M",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "rank_attrs": [
+        {
+          "attr_code": "SUM_TURNOVER_3M",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "RANK_BY_AVG_TURNOVER_3M",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "rank_attrs": [
+        {
+          "attr_code": "AVG_TURNOVER_3M",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "RANK_BY_SUM_TURNOVER_12M",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "rank_attrs": [
+        {
+          "attr_code": "SUM_TURNOVER_12M",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "RANK_ISSUER_BY_AVG_MCAP_20D",
+      "attr_type": "RANK",
+      "attr_data_type": "NUMBER",
+      "partition_by": "ISSUER",
+      "rank_attrs": [
+        {
+          "attr_code": "AVG_MCAP_20D",
+          "order": 1,
+          "direction": "DESC"
+        }
+      ]
+    },
+    {
+      "attr_code": "DAXESG_REFORM_FAST_ENTRY_ALTERN_PRIOR",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when in_composition=0 then 0 when rank_by_esg_score<=60 then rank_by_avg_mcap_20d else rank_by_avg_mcap_20d*100 end"
+    },
+    {
+      "attr_code": "DAXESG_REFORM_FAST_EXIT_ALTERN_PRIOR",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when in_composition=1 then 0 when rank_by_esg_score<=60 then rank_by_avg_mcap_20d when rank_by_esg_score<=65 then rank_by_avg_mcap_20d*100 when rank_by_esg_score<=70 then rank_by_avg_mcap_20d*10000 else rank_by_avg_mcap_20d*1000000 end"
+    },
+    {
+      "attr_code": "DAX_REFORM_FAST_ENTRY_ALTERN_PRIOR",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when in_composition=0 then 0 else rank_by_avg_mcap_20d end"
+    },
+    {
+      "attr_code": "DAX_REFORM_FAST_EXIT_ALTERN_PRIOR",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when in_composition=1 then 0 else rank_by_avg_mcap_20d end"
+    },
+    {
+      "attr_code": "MDAX_REFORM_FAST_EXIT_ALTERN_PRIOR",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when in_composition=1 or in_composition_dax30=1 then 0 else rank_by_avg_mcap_20d end"
+    },
+    {
+      "attr_code": "SDAX_REFORM_FAST_EXIT_ALTERN_PRIOR",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when in_composition=1 or in_composition_dax30=1 or in_composition_mdax=1 then 0 else rank_by_avg_mcap_20d end"
+    },
+    {
+      "attr_code": "TURNOVER_RATE",
+      "attr_type": "EXPRESSION",
+      "attr_data_type": "NUMBER",
+      "expression": "case when avg_mcap_20d<>0 then sum_turnover_12m/avg_mcap_20d end"
+    }
+  ],
+  "key": "LISTING_ID"
+}

@@ -21,7 +21,7 @@ def post_input(session_id, input_data_file, selection_file, universe_file):
 if __name__ == '__main__':
     session_id = str(uuid.uuid4())  # 'tteesstt'
     post_input(session_id,
-               input_data_file='source_data/input_data.csv',
+               input_data_file='source_data/input_data_dax.csv',
                selection_file='source_data/selection.json',
                universe_file='source_data/universe.json')
     download_result(session_id)

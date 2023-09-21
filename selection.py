@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List
+from typing import List, Set
 from collections import defaultdict
 
 import pandas as pd
@@ -35,22 +35,21 @@ def get_inputs(client_input_folder: str) -> (pd.DataFrame, List[attributes.Attri
         df = pd.read_csv(os.path.join(client_input_folder, INPUT_DATA_FILE_NAME))
     except FileNotFoundError as e:
         raise InputDataFileNotFound(f"Input data file not found: {e}")
-
     try:
         with open(os.path.join(client_input_folder, UNIVERSE_FILE_NAME), 'r') as file:
             universe_src = json.load(file)
         universe_attributes = attributes.get_universe_attributes(universe_src['attributes'])
         key_column = universe_src['key']
-    except (FileNotFoundError,json.JSONDecodeError) as e:
+    except (FileNotFoundError, json.JSONDecodeError) as e:
         raise UniverseFileError(f"Error loading Universe file: {e}")
-
     try:
         with open(os.path.join(client_input_folder, SELECTIONS_FILE_NAME), 'r') as file:
             selections_src = json.load(file)
         sels = selections.get_selections(selections_src['selections'])
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        raise SelectionsFileError(f"Error loading Selections file")
+        raise SelectionsFileError(f"Error loading Selections file: {e}")
     return df, universe_attributes, sels, key_column
+
 
 def get_attribute(attr_code: str, universe_attributes: List[attributes.Attribute]) -> attributes.Attribute:
     """
@@ -74,6 +73,30 @@ def get_attribute_dependencies(attr_code: str, universe_attributes: List[attribu
     return dependencies
 
 
+def get_ordered_attrs(selection: selections.Selection,
+                      universe_attributes: List[attributes.Attribute],
+                      application_level: int,
+                      input_attrs: Set):
+    attr_code_dependencies = defaultdict(list)
+    for filter_id, expression in selection.get_filters(application_level):
+        # get all attributes from filters of the application_level
+        for attr_code in sql_expr_parser.extract_identifiers(expression):
+            attr_code_dependencies[attr_code] = [dep for dep in get_attribute_dependencies(attr_code,
+                                                                                           universe_attributes)
+                                                 if dep not in input_attrs]
+    ordered_attrs = defaultdict(set)
+    sql_level = 0
+    flag = True
+    while flag:
+        flag = False
+        for deps in attr_code_dependencies.values():
+            if deps:
+                ordered_attrs[sql_level].add(deps.pop())
+                flag = True
+        sql_level += 1
+    return ordered_attrs
+
+
 def build_selection_sql(selection: selections.Selection, universe_attributes: List[attributes.Attribute]) -> str:
     """
     builds sql query to express selection process in sql
@@ -81,25 +104,9 @@ def build_selection_sql(selection: selections.Selection, universe_attributes: Li
     input_attrs = {a.code for a in universe_attributes if type(a) == attributes.AttributeInput}
     sql_query = 'select * from df'
     for lvl in selection.get_application_levels():
-        attr_code_dependencies = defaultdict(list)
-        for filter_id, expression in selection.get_filters(lvl):
-            # get all attributes from filters of the application_level
-            for attr_code in sql_expr_parser.extract_identifiers(expression):
-                attr_code_dependencies[attr_code] = [dep for dep in get_attribute_dependencies(attr_code,
-                                                                                               universe_attributes)
-                                                     if dep not in input_attrs]
-        sql_level_attrs = defaultdict(set)
-        sql_level = 0
-        flag = True
-        while flag:
-            flag = False
-            for deps in attr_code_dependencies.values():
-                if deps:
-                    sql_level_attrs[sql_level].add(deps.pop())
-                    flag = True
-            sql_level += 1
-        preceding_filters = [f"filters_level_{l}" for l in selection.get_application_levels() if l < lvl]
-        for attr_codes in sql_level_attrs.values():
+        preceding_filters = [f"filters_level_{level}" for level in selection.get_application_levels() if level < lvl]
+        ordered_attrs = get_ordered_attrs(selection, universe_attributes, lvl, input_attrs)
+        for attr_codes in ordered_attrs.values():
             columns = ','.join(get_attribute(attr_code, universe_attributes).get_sql_expression(preceding_filters)
                                for attr_code in attr_codes)
             sql_query = f"select d.*,{columns} from ({sql_query}) d"
@@ -122,7 +129,7 @@ def get_selection_results(selection: selections.Selection, key_column: str, df: 
     relevant_columns = [key_column]
     if add_attributes:
         relevant_columns.extend(c for c in df.columns.tolist()
-                                if c not in (key_column,"is_selected") and not c.startswith("filter"))
+                                if c not in (key_column, "is_selected") and not c.startswith("filter"))
     if add_filters:
         relevant_columns.extend(c for c in df.columns.tolist()
                                 if c.startswith("filter_"))

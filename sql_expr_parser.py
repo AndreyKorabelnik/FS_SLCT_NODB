@@ -1,8 +1,6 @@
 # based on https://github.com/pyparsing/pyparsing/blob/master/examples/select_parser.py
 from pyparsing import *
 
-
-
 ParserElement.enablePackrat()
 
 LPAR, RPAR, COMMA = map(Suppress, "(),")

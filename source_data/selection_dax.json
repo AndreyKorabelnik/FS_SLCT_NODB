@@ -1,0 +1,85 @@
+{
+  "selections": [
+    {
+      "selection_id": 139340,
+      "filters": [
+        {
+          "filter_id": 1,
+          "expression": "xetra_trading_type in (20,30)",
+          "application_level": 1
+        },
+        {
+          "filter_id": 2,
+          "expression": "is_sibling_by_issuer_in_blue=0",
+          "application_level": 1
+        },
+        {
+          "filter_id": 3,
+          "expression": "free_float_factor>=0.1",
+          "application_level": 1
+        },
+        {
+          "filter_id": 4,
+          "expression": "semi_ann_rep_recd=1 or (semi_ann_rep_recd=0 and semi_ann_rep_breach_3m=0)",
+          "application_level": 1
+        },
+        {
+          "filter_id": 5,
+          "expression": "ann_rep_recd=1 or (ann_rep_recd=0 and ann_rep_breach_4m=0)",
+          "application_level": 1
+        },
+        {
+          "filter_id": 6,
+          "expression": "compliance_check=1 or (compliance_check=0 and compliance_check_gf_rule_flag=1)",
+          "application_level": 1
+        },
+        {
+          "filter_id": 7,
+          "expression": "country_id='DE' or is_euefta_country=1 or is_headquater_in_germany=1",
+          "application_level": 1
+        },
+        {
+          "filter_id": 8,
+          "expression": "qtly_rep_recd=1 or (qtly_rep_recd=0 and qtly_rep_breach_75d=0)",
+          "application_level": 1
+        },
+        {
+          "filter_id": 9,
+          "expression": "in_exclusion_list=0",
+          "application_level": 1
+        },
+        {
+          "filter_id": 10,
+          "expression": "avg_mcap_20d is not null",
+          "application_level": 1
+        },
+        {
+          "filter_id": 11,
+          "expression": "trade_days_6m>=30",
+          "application_level": 1
+        },
+        {
+          "filter_id": 12,
+          "expression": "dwh_instrument_id is not null and dwh_listing_id is not null",
+          "application_level": 1
+        },
+        {
+          "filter_id": 13,
+          "expression": "rank_issuer_by_avg_mcap_20d=1",
+          "application_level": 2
+        },
+        {
+          "filter_id": 14,
+          "expression": "(in_ranking_list_composition=0 and (turnover_rate>=0.2 or sum_turnover_12m>=1000000000)) or (in_ranking_list_composition=1 and (turnover_rate>=0.1 or sum_turnover_12m>=800000000))",
+          "application_level": 3
+        }
+      ],
+      "output": {
+        "show_all": 1,
+        "add_attributes": 1,
+        "add_filters": 1,
+        "add_failed_filters": 1
+      }
+    }
+  ]
+}
