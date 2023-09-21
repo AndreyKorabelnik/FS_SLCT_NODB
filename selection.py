@@ -10,9 +10,9 @@ import attributes
 import selections
 import sql_expr_parser
 
-UNIVERSE_FILE_NAME = 'universe.json'
-SELECTIONS_FILE_NAME = 'selection.json'
-INPUT_DATA_FILE_NAME = 'input_data.csv'
+UNIVERSE_FILE_NAME = 'universe_dax.json'
+SELECTIONS_FILE_NAME = 'selection_dax.json'
+INPUT_DATA_FILE_NAME = 'input_data_dax.csv'
 
 
 class InputDataFileNotFound(Exception):
@@ -155,7 +155,7 @@ def run(client_input_folder: str, client_output_folder: str):
                                        pandasql.sqldf(selection_sql))
         output_file_name = os.path.join(client_output_folder, f'output_{selection.get_id()}.csv')
         with open(output_file_name, 'w') as file:
-            df_out.to_csv(file, index=False, lineterminator='')
+            df_out.to_csv(file, index=False, lineterminator='\n')
 
 
 if __name__ == '__main__':
