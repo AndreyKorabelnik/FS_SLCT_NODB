@@ -51,28 +51,6 @@ def get_inputs(client_input_folder: str) -> (pd.DataFrame, List[attributes.Attri
     return df, universe_attributes, sels, key_column
 
 
-def get_attribute(attr_code: str, universe_attributes: List[attributes.Attribute]) -> attributes.Attribute:
-    """
-    Returns Attribute type by attr_code from universe_attributes
-    """
-    return next(attr for attr in universe_attributes if attr.code == attr_code)
-
-
-def get_attribute_dependencies(attr_code: str, universe_attributes: List[attributes.Attribute]) -> List[str]:
-    """
-    Returns list of parent attr_codes for attr_code
-    """
-    dependencies = []
-    parents = [attr_code]
-    while parents:
-        a = parents.pop()
-        if a not in dependencies:
-            dependencies.append(a)
-            parents.extend(d for d in get_attribute(a, universe_attributes).get_dependencies()
-                           if d not in parents)
-    return dependencies
-
-
 def get_ordered_attrs(selection: selections.Selection,
                       universe_attributes: List[attributes.Attribute],
                       application_level: int,
@@ -81,8 +59,8 @@ def get_ordered_attrs(selection: selections.Selection,
     for filter_id, expression in selection.get_filters(application_level):
         # get all attributes from filters of the application_level
         for attr_code in sql_expr_parser.extract_identifiers(expression):
-            attr_code_dependencies[attr_code] = [dep for dep in get_attribute_dependencies(attr_code,
-                                                                                           universe_attributes)
+            attr_code_dependencies[attr_code] = [dep for dep in attributes.get_attribute_dependencies(attr_code,
+                                                                                                      universe_attributes)
                                                  if dep not in input_attrs]
     ordered_attrs = defaultdict(set)
     sql_level = 0
@@ -97,6 +75,50 @@ def get_ordered_attrs(selection: selections.Selection,
     return ordered_attrs
 
 
+def add_attrs_to_sql_query(sql_query: str,
+                           attr_codes: List[str],
+                           universe_attributes: List[attributes.Attribute],
+                           preceding_filters: List[str]):
+    if attr_codes:
+        columns = ','.join(
+            attributes.get_attribute(attr_code, universe_attributes).get_sql_expression(preceding_filters)
+            for attr_code in attr_codes)
+        return f"select d.*,{columns} from ({sql_query}) d"
+    else:
+        return sql_query
+
+
+def add_attrs_to_selection_sql(sql_query: str, selection: selections.Selection, application_level: int,
+                               universe_attributes: List[attributes.Attribute], input_attrs: Set[str]) -> str:
+    preceding_filters = [f"filters_level_{level}" for level in selection.get_application_levels() if
+                         level < application_level]
+    # add filters relevant attributes
+    ordered_attrs = get_ordered_attrs(selection, universe_attributes, application_level, input_attrs)
+    for attr_codes in ordered_attrs.values():
+        sql_query = add_attrs_to_sql_query(sql_query, list(attr_codes), universe_attributes, preceding_filters)
+    # add output attributes
+    sql_query = add_attrs_to_sql_query(sql_query, selection.get_output_attrs(application_level),
+                                       universe_attributes, preceding_filters)
+    return sql_query
+
+
+def add_filters_to_selection_sql(sql_query: str, selection: selections.Selection, application_level: int):
+    filters = ','.join(f"case when {expression} then 1 else 0 end as filter_{filter_id}"
+                       for filter_id, expression in selection.get_filters(application_level))
+    sql_query = f"select d.*,{filters} from ({sql_query}) d"
+    # add combined filters column
+    aux_string = " and ".join(f"filter_{filter_id}=1" for filter_id, _ in selection.get_filters(application_level))
+    sql_query = f"select d.*,case when {aux_string} then 1 else 0 end as filters_level_{application_level} " \
+                f"from ({sql_query}) d"
+    return sql_query
+
+
+def add_is_selected_to_selection_sql(sql_query: str, selection: selections.Selection):
+    aux_string = " and ".join(f"filters_level_{lvl}=1" for lvl in selection.get_application_levels())
+    sql_query = f"select d.*,case when {aux_string} then 1 else 0 end as is_selected from ({sql_query}) d"
+    return sql_query
+
+
 def build_selection_sql(selection: selections.Selection, universe_attributes: List[attributes.Attribute]) -> str:
     """
     builds sql query to express selection process in sql
@@ -104,20 +126,9 @@ def build_selection_sql(selection: selections.Selection, universe_attributes: Li
     input_attrs = {a.code for a in universe_attributes if type(a) == attributes.AttributeInput}
     sql_query = 'select * from df'
     for lvl in selection.get_application_levels():
-        preceding_filters = [f"filters_level_{level}" for level in selection.get_application_levels() if level < lvl]
-        ordered_attrs = get_ordered_attrs(selection, universe_attributes, lvl, input_attrs)
-        for attr_codes in ordered_attrs.values():
-            columns = ','.join(get_attribute(attr_code, universe_attributes).get_sql_expression(preceding_filters)
-                               for attr_code in attr_codes)
-            sql_query = f"select d.*,{columns} from ({sql_query}) d"
-        filters = ','.join(f"case when {expression} then 1 else 0 end as filter_{filter_id}"
-                           for filter_id, expression in selection.get_filters(lvl))
-        sql_query = f"select d.*,{filters} from ({sql_query}) d"
-        aux_string = " and ".join(f"filter_{filter_id}=1" for filter_id, _ in selection.get_filters(lvl))
-        all_filters = f'case when {aux_string} then 1 else 0 end as filters_level_{lvl}'
-        sql_query = f"select d.*,{all_filters} from ({sql_query}) d"
-    aux_string = " and ".join(f"filters_level_{lvl}=1" for lvl in selection.get_application_levels())
-    sql_query = f"select d.*,case when {aux_string} then 1 else 0 end as is_selected from ({sql_query}) d"
+        sql_query = add_attrs_to_selection_sql(sql_query, selection, lvl, universe_attributes, input_attrs)
+        sql_query = add_filters_to_selection_sql(sql_query, selection, lvl)
+    sql_query = add_is_selected_to_selection_sql(sql_query, selection)
     return sql_query
 
 
@@ -150,9 +161,7 @@ def run(client_input_folder: str, client_output_folder: str):
     df, universe_attributes, sels, key_column = get_inputs(client_input_folder)
     for selection in sels:
         selection_sql = build_selection_sql(selection, universe_attributes)
-        df_out = get_selection_results(selection,
-                                       key_column,
-                                       pandasql.sqldf(selection_sql))
+        df_out = get_selection_results(selection, key_column, pandasql.sqldf(selection_sql))
         output_file_name = os.path.join(client_output_folder, f'output_{selection.get_id()}.csv')
         with open(output_file_name, 'w') as file:
             df_out.to_csv(file, index=False, lineterminator='\n')
