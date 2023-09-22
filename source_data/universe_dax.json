@@ -151,6 +151,11 @@
       "attr_data_type": "NUMBER"
     },
     {
+      "attr_code": "NUMBER_OF_SHARES",
+      "attr_type": "INPUT",
+      "attr_data_type": "NUMBER"
+    },
+    {
       "attr_code": "RANK_BY_AVG_MCAP_20D",
       "attr_type": "RANK",
       "attr_data_type": "NUMBER",

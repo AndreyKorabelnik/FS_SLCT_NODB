@@ -78,6 +78,10 @@
         {
           "attr_code": "RANK_BY_SUM_TURNOVER_12M",
           "application_level": 2
+        },
+        {
+          "attr_code": "RANK_BY_AVG_MCAP_20D",
+          "application_level": 3
         }
       ],
       "output_settings": {

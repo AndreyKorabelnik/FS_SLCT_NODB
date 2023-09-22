@@ -112,3 +112,28 @@ def get_universe_attributes(universe: List[Dict]) -> List[Attribute]:
                                     attr['expression'])
         universe_attributes.append(a)
     return universe_attributes
+
+
+def get_attribute(attr_code: str, universe_attributes: List[Attribute]) -> Attribute:
+    """
+    Returns Attribute type by attr_code from universe_attributes
+    """
+    try:
+        return next(attr for attr in universe_attributes if attr.code == attr_code)
+    except StopIteration as e:
+        raise Exception(f'Attribute {attr_code} not found in universe: {e}')
+
+
+def get_attribute_dependencies(attr_code: str, universe_attributes: List[Attribute]) -> List[str]:
+    """
+    Returns list of parent attr_codes for attr_code
+    """
+    dependencies = []
+    parents = [attr_code]
+    while parents:
+        a = parents.pop()
+        if a not in dependencies:
+            dependencies.append(a)
+            parents.extend(d for d in get_attribute(a, universe_attributes).get_dependencies()
+                           if d not in parents)
+    return dependencies
